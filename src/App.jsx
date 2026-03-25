@@ -18,35 +18,39 @@ const COMPETITIONS = [
 ];
 
 const INIT_STUDENTS = [
-  {id:1,name:"Priya Mehta",program:"MBA 2025",section:"A",skills:["Strategy","Presentation","Market Research"],roles:["Strategist","Presenter"],availability:"Weekends + evenings",repScore:4.8,matchScore:94,verified:true,completedComps:5,bio:"IIM-L topper, ex-BCG intern. Love building stories from data.",avatar:"PM",color:C.teal,interest:null},
-  {id:2,name:"Ankit Kumar",program:"MBA 2025",section:"B",skills:["Analytics","Python","Excel Modelling"],roles:["Analyst","Researcher"],availability:"Flexible",repScore:4.6,matchScore:89,verified:true,completedComps:3,bio:"Data-first thinker. Built dashboards at HDFC before MBA.",avatar:"AK",color:C.amber,interest:null},
-  {id:3,name:"Shruti Rao",program:"MBA 2025",section:"A",skills:["Research","Communication","Slides"],roles:["Researcher","Slide Maker"],availability:"Evenings only",repScore:4.5,matchScore:84,verified:true,completedComps:4,bio:"Journalist turned MBA. I make complex ideas simple.",avatar:"SR",color:C.coral,interest:null},
-  {id:4,name:"Dev Patel",program:"MBA 2024",section:"C",skills:["Finance","Valuation","Excel"],roles:["Analyst","Strategist"],availability:"Weekends",repScore:4.9,matchScore:91,verified:true,completedComps:8,bio:"CFA L2. Former VC analyst. Numbers are my language.",avatar:"DP",color:C.purple,interest:null},
-  {id:5,name:"Kavya Nair",program:"MBA 2025",section:"B",skills:["Marketing","Branding","GTM"],roles:["Strategist","Presenter"],availability:"Flexible",repScore:4.4,matchScore:78,verified:true,completedComps:2,bio:"Brand manager before MBA. I build narratives that stick.",avatar:"KN",color:C.green,interest:null},
+  {id:1,name:"Amey",program:"MBA 2025",section:"A",skills:["Finance","Valuation","Financial Modeling"],roles:["Analyst","Strategist"],availability:"Weekends + evenings",repScore:4.8,matchScore:94,verified:true,completedComps:5,bio:"CFA aspirant. Expert in financial modeling and valuation frameworks. Loves solving complex financial cases.",avatar:"AM",color:C.teal,interest:null},
+  {id:2,name:"Deepak",program:"MBA 2025",section:"B",skills:["Design","Presentation","UI/UX"],roles:["Designer","Presenter"],availability:"Flexible",repScore:4.6,matchScore:89,verified:true,completedComps:3,bio:"Creative problem-solver with strong design and presentation skills. Brings visual clarity to complex ideas.",avatar:"DK",color:C.amber,interest:null},
+  {id:3,name:"Shivam",program:"MBA 2025",section:"A",skills:["Analytics","Python","Data Science"],roles:["Analyst","Researcher"],availability:"Evenings only",repScore:4.5,matchScore:84,verified:true,completedComps:4,bio:"Data enthusiast with strong Python skills. Transforms raw data into actionable insights.",avatar:"SH",color:C.coral,interest:null},
+  {id:4,name:"Piyush",program:"MBA 2024",section:"C",skills:["Marketing","Go-to-Market","Brand Strategy"],roles:["Strategist","Presenter"],availability:"Weekends",repScore:4.9,matchScore:91,verified:true,completedComps:8,bio:"Marketing veteran with GTM expertise. Builds brands that resonate with target audiences.",avatar:"PY",color:C.purple,interest:null},
+  {id:5,name:"Vikas",program:"MBA 2025",section:"B",skills:["Research","Communication","Slide Design"],roles:["Researcher","Communicator"],availability:"Flexible",repScore:4.4,matchScore:78,verified:true,completedComps:2,bio:"Research-driven analyst who excels at breaking down complex topics. Clear communicator.",avatar:"VK",color:C.green,interest:null},
+  {id:6,name:"Anshul",program:"MBA 2025",section:"A",skills:["Operations","Process Optimization","Supply Chain"],roles:["Operator","Strategist"],availability:"Weekends + evenings",repScore:4.7,matchScore:87,verified:true,completedComps:6,bio:"Operations excellence specialist. Expert in process optimization and supply chain management.",avatar:"AS",color:C.teal,interest:null},
+  {id:7,name:"Abhishek",program:"MBA 2025",section:"B",skills:["Speaking","Communication","Negotiation"],roles:["Presenter","Communicator"],availability:"Flexible",repScore:4.5,matchScore:82,verified:true,completedComps:4,bio:"Outstanding speaker and communicator. Excels at presenting ideas persuasively to stakeholders.",avatar:"AB",color:C.amber,interest:null},
 ];
 
 const MATCH_REASONS = {
-  1:["Complementary skills — you bring Ops, she brings Strategy","Both prefer weekends + evenings","High reputation score (4.8)","Same section — easy coordination"],
-  2:["You lack Analytics — he fills the gap","Flexible schedule matches yours","Python skills add quantitative depth","Verified track record in 3 competitions"],
-  3:["Research + Comms covers your weak area","Evening availability aligns","Slide-making complements your analytical side","Low free-rider risk based on past feedback"],
-  4:["Finance depth you don't have","Senior — brings mentor-like perspective","CFA level signals reliability","8 completed comps = battle-tested"],
-  5:["Marketing + GTM rounds out a 4-person team","Branding skill complements Ops framing","Flexible availability — lowest scheduling risk","High communicator score from past teammates"],
+  1:["Finance expertise — complements your operations focus","Both prefer weekends + evenings","High reputation score (4.8)","Same section — easy coordination"],
+  2:["Design & presentation skills bring visual clarity","Flexible schedule matches yours","Strong design background adds professional polish","Verified track record in 3 competitions"],
+  3:["Analytics depth fills your skill gap","Evening availability aligns","Python/data science skills strengthen quantitative analysis","Low free-rider risk based on past feedback"],
+  4:["Marketing & GTM strategy rounds out the team","Senior — brings mentor-like perspective","Extensive marketing case experience","8 completed comps = battle-tested"],
+  5:["Research + communication covers analysis & messaging","Flexible availability — lowest scheduling risk","High communicator score from past teammates","Complements your operational strength"],
+  6:["Operations synergy — both understand process flow","Weekends + evenings preference aligns","Strong operations background complements yours","6 completed competitions together"],
+  7:["Speaking & communication delivers your ideas","Flexible availability — perfect for scheduling","Excellent negotiation & presentation skills","4 successful competitions on record"],
 };
 
 const INIT_NOTIFS = [
-  {id:1,type:"match",msg:"New match: Priya Mehta (94%) for IIM-A Conclave",time:"2m ago",read:false},
-  {id:2,type:"interest",msg:"Dev Patel expressed interest in your open slot",time:"1h ago",read:false},
+  {id:1,type:"match",msg:"New match: Amey (94%) for IIM-A Conclave",time:"2m ago",read:false},
+  {id:2,type:"interest",msg:"Piyush expressed interest in your open slot",time:"1h ago",read:false},
   {id:3,type:"deadline",msg:"XLRI Finance Cup deadline in 3 days — team incomplete",time:"3h ago",read:true},
   {id:4,type:"feedback",msg:"Feedback received from ISB Analytics Cup teammate",time:"1d ago",read:true},
 ];
 
 const TEAM = [
-  {name:"Priya Mehta",role:"Strategist",avatar:"PM",color:C.teal,tasks:4,done:3},
-  {name:"Ankit Kumar",role:"Analyst",avatar:"AK",color:C.amber,tasks:3,done:2},
-  {name:"Latesh Sharma",role:"Ops Lead",avatar:"LS",color:C.navy,tasks:3,done:1},
+  {name:"Amey",role:"Finance Lead",avatar:"AM",color:C.teal,tasks:4,done:3},
+  {name:"Deepak",role:"Design & Presentation",avatar:"DK",color:C.amber,tasks:3,done:2},
+  {name:"Latesh Bayad",role:"Ops Lead",avatar:"LS",color:C.navy,tasks:3,done:1},
 ];
 
-const ME = {name:"Latesh Sharma",program:"MBA 2025",section:"A",skills:["Operations","Strategy","Quantitative Analysis"],roles:["Analyst","Strategist"],repScore:4.2,completedComps:1,bio:"IIM-L student. Supply chain & ops background. Looking to build on case comp experience.",avatar:"LS",color:C.navy,verified:true,availability:"Weekends + evenings"};
+const ME = {name:"Latesh Bayad",program:"MBA 2025",section:"A",skills:["Operations","Strategy","Quantitative Analysis"],roles:["Analyst","Strategist"],repScore:4.2,completedComps:1,bio:"IIM-L student. Supply chain & ops background. Looking to build on case comp experience.",avatar:"LS",color:C.navy,verified:true,availability:"Weekends + evenings"};
 
 const TT = {
   match:"Match score = skill complementarity (40%) + schedule overlap (25%) + reputation (20%) + role balance (15%). Rules-based, fully transparent — no black-box AI.",
@@ -523,7 +527,7 @@ function MyTeam({team,setModal,toast_}) {
   const tasks=[
     {id:1,title:"Market sizing for Slide 3",owner:"Ankit Kumar",status:"done",due:"Apr 8"},
     {id:2,title:"Problem statement framing",owner:"Priya Mehta",status:"done",due:"Apr 9"},
-    {id:3,title:"Build financial model",owner:"Latesh Sharma",status:"in-progress",due:"Apr 11"},
+    {id:3,title:"Build financial model",owner:"Latesh Bayad",status:"in-progress",due:"Apr 11"},
     {id:4,title:"Draft executive summary",owner:"Priya Mehta",status:"todo",due:"Apr 12"},
     {id:5,title:"Final slide deck assembly",owner:"All",status:"todo",due:"Apr 13"},
   ];
