@@ -91,8 +91,20 @@ export default function App() {
   const [fbScores,setFbScores]=useState({reliability:0,communication:0,workload:0,deadline:0});
   const [fbNote,setFbNote]=useState("");
   const [showOnb,setShowOnb]=useState(false);
+  const [sidebarOpen,setSidebarOpen]=useState(true);
+  const [isMobile,setIsMobile]=useState(window.innerWidth<768);
 
   useEffect(()=>{setTimeout(()=>setLoading(false),1000);},[]);
+
+  useEffect(()=>{
+    const handleResize=()=>setIsMobile(window.innerWidth<768);
+    window.addEventListener("resize",handleResize);
+    return ()=>window.removeEventListener("resize",handleResize);
+  },[]);
+
+  useEffect(()=>{
+    if(isMobile) setSidebarOpen(false);
+  },[isMobile]);
 
   const toast_=(msg,type="success")=>{setToast({msg,type});setTimeout(()=>setToast(null),3500);};
   const unread=notifs.filter(n=>!n.read).length;
@@ -129,6 +141,20 @@ export default function App() {
         @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
         @keyframes slideRight{from{transform:translateX(110%)}to{transform:translateX(0)}}
         @keyframes matchGlow{0%,100%{box-shadow:0 0 0 0 rgba(14,165,168,.4)}70%{box-shadow:0 0 0 8px rgba(14,165,168,0)}}
+        @media (max-width:767px){
+          .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:999;transform:translateX(-100%);transition:transform .3s ease}
+          .sidebar.open{transform:translateX(0)}
+          .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:998;display:none}
+          .sidebar-overlay.open{display:block}
+          .main-content{width:100%}
+          .hamburger-btn{display:flex;gap:6px;flex-direction:column;cursor:pointer;background:none;border:none;padding:8px;font-size:20px}
+          .hamburger-btn span{width:24px;height:2px;background:${C.navy};transition:all .3s}
+        }
+        @media (min-width:768px){
+          .hamburger-btn{display:none}
+          .sidebar-overlay{display:none!important}
+          .sidebar{transform:translateX(0)!important}
+        }
         .nav-item{cursor:pointer;border-radius:10px;transition:all .2s;padding:9px 12px;display:flex;align-items:center;gap:9px;color:#8BAAC5;font-size:13px;font-weight:500}
         .nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
         .nav-item.active{background:rgba(14,165,168,.18);color:${C.teal};font-weight:700}
@@ -151,10 +177,17 @@ export default function App() {
         .ov{position:fixed;inset:0;background:rgba(16,42,67,.5);backdrop-filter:blur(3px);z-index:1000;display:flex;align-items:center;justify-content:center;animation:fadeUp .2s}
         .mbox{background:#fff;border-radius:18px;padding:26px;width:90%;max-width:500px;box-shadow:0 20px 60px rgba(16,42,67,.25);animation:fadeUp .25s;max-height:88vh;overflow-y:auto}
         .enter{animation:fadeUp .3s}
+        @media (max-width:640px){
+          .mbox{width:95%;max-width:calc(100vw-20px);padding:18px}
+          .inp{font-size:16px}
+        }
       `}</style>
 
+      {/* SIDEBAR OVERLAY FOR MOBILE */}
+      {isMobile && <div className={`sidebar-overlay${sidebarOpen?" open":""}`} onClick={()=>setSidebarOpen(false)}/>}
+
       {/* SIDEBAR */}
-      <aside style={{width:212,background:C.navy,display:"flex",flexDirection:"column",padding:"0 10px 14px",flexShrink:0}}>
+      <aside className={`sidebar${sidebarOpen?" open":""}`} style={{width:212,background:C.navy,display:"flex",flexDirection:"column",padding:"0 10px 14px",flexShrink:0,transition:"transform .3s ease"}}>
         <div style={{padding:"18px 6px 14px",borderBottom:"1px solid rgba(255,255,255,.08)",marginBottom:6}}>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <div style={{width:36,height:36,borderRadius:10,background:`linear-gradient(135deg,${C.teal},#0C8F92)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:17}}>⟺</div>
@@ -166,7 +199,7 @@ export default function App() {
         </div>
         <nav style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",gap:2}}>
           {NAV.map(n=>(
-            <div key={n.k} className={`nav-item${page===n.k?" active":""}`} onClick={()=>setPage(n.k)}>
+            <div key={n.k} className={`nav-item${page===n.k?" active":""}`} onClick={()=>{setPage(n.k);if(isMobile)setSidebarOpen(false);}}>
               <span style={{fontSize:15}}>{n.i}</span><span>{n.l}</span>
             </div>
           ))}
@@ -180,20 +213,21 @@ export default function App() {
       </aside>
 
       {/* MAIN */}
-      <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+      <div className="main-content" style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
         {/* Topbar */}
-        <header style={{height:54,background:"#fff",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",padding:"0 20px",gap:12,flexShrink:0}}>
+        <header style={{height:54,background:"#fff",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",padding:"0 12px 0 20px",gap:12,flexShrink:0}}>
+          {isMobile && <button className="hamburger-btn" onClick={()=>setSidebarOpen(!sidebarOpen)} style={{display:"flex"}}>☰</button>}
           <div style={{flex:1,position:"relative"}}>
             <span style={{position:"absolute",left:11,top:"50%",transform:"translateY(-50%)",color:C.muted,fontSize:14}}>⊙</span>
             <input className="inp" style={{paddingLeft:34,height:36,fontSize:13}} placeholder="Search students by name, skill, or role… try 'Python' or 'Strategist'" value={search} onChange={e=>{setSearch(e.target.value);if(e.target.value)setPage("browse");}}/>
           </div>
-          <button className="btn bg" style={{fontSize:12,padding:"6px 12px"}} onClick={()=>setShowOnb(true)}>👋 Onboarding</button>
+          <button className="btn bg" style={{fontSize:12,padding:"6px 12px",whiteSpace:"nowrap"}} onClick={()=>setShowOnb(true)}>👋 Onboarding</button>
           <div style={{position:"relative"}}>
             <button className="btn bg" style={{fontSize:17,padding:"5px 9px",position:"relative"}} onClick={()=>setShowN(p=>!p)}>
               🔔{unread>0&&<span style={{position:"absolute",top:-4,right:-4,width:17,height:17,borderRadius:"50%",background:C.coral,color:"#fff",fontSize:10,fontWeight:800,display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #fff",animation:"pulse 2s infinite"}}>{unread}</span>}
             </button>
             {showN&&(
-              <div className="card" style={{position:"absolute",right:0,top:"calc(100% + 6px)",width:330,zIndex:200,padding:0,overflow:"hidden"}}>
+              <div className="card" style={{position:"absolute",right:0,top:"calc(100% + 6px)",width:330,zIndex:200,padding:0,overflow:"hidden",maxWidth:"calc(100vw - 20px)"}}>
                 <div style={{padding:"12px 16px",borderBottom:`1px solid ${C.border}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                   <span style={{fontWeight:700,color:C.dark,fontSize:14}}>Notifications</span>
                   <button className="btn bg" style={{fontSize:11,padding:"3px 8px"}} onClick={()=>setNotifs(p=>p.map(n=>({...n,read:true})))}>Mark all read</button>
@@ -210,13 +244,13 @@ export default function App() {
           </div>
         </header>
 
-        <main style={{flex:1,overflowY:"auto",padding:20}} onClick={()=>showN&&setShowN(false)}>
+        <main style={{flex:1,overflowY:"auto",padding:"20px",paddingTop:"12px"}} onClick={()=>showN&&setShowN(false)}>
           {loading?(
             <div style={{display:"flex",flexDirection:"column",gap:16}}>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:12}}>
                 {[1,2,3,4].map(i=><div key={i} className="card" style={{padding:20,height:90,background:"linear-gradient(90deg,#e8edf2 25%,#f0f4f7 50%,#e8edf2 75%)",backgroundSize:"200% 100%",animation:"shimmer 1.4s infinite"}}/>)}
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:12}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))",gap:12}}>
                 <div className="card" style={{padding:20,height:220,background:"linear-gradient(90deg,#e8edf2 25%,#f0f4f7 50%,#e8edf2 75%)",backgroundSize:"200% 100%",animation:"shimmer 1.4s infinite"}}/>
                 <div className="card" style={{padding:20,height:220,background:"linear-gradient(90deg,#e8edf2 25%,#f0f4f7 50%,#e8edf2 75%)",backgroundSize:"200% 100%",animation:"shimmer 1.4s infinite"}}/>
               </div>
@@ -269,7 +303,7 @@ function Dashboard({setPage,students,sendInterest,setModal}) {
         <button className="btn bp" onClick={()=>setPage("browse")} style={{whiteSpace:"nowrap",flexShrink:0}}>+ Find Teammates</button>
       </div>
 
-      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:12}}>
         {kpis.map((k,i)=>(
           <div key={i} className="card" style={{padding:"16px 18px",position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",right:-6,top:-6,fontSize:52,opacity:.07}}>{k.i}</div>
@@ -283,7 +317,7 @@ function Dashboard({setPage,students,sendInterest,setModal}) {
         ))}
       </div>
 
-      <div style={{display:"grid",gridTemplateColumns:"1.4fr 1fr",gap:14}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))",gap:14}}>
         <div className="card" style={{padding:20}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
             <div style={{display:"flex",alignItems:"center",gap:6}}><h3 style={{fontWeight:800,color:C.navy,fontSize:15}}>Top Matches For You</h3><IIcon tip={TT.match}/></div>
@@ -434,7 +468,7 @@ function Matches({students,sendInterest,setModal}) {
   return (
     <div style={{display:"flex",flexDirection:"column",gap:18}}>
       <h2 style={{fontSize:22,fontWeight:800,color:C.navy}}>Your Matches</h2>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14}}>
         <div className="card" style={{padding:20}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
             <h3 style={{fontWeight:800,color:C.navy,fontSize:15}}>Interest Sent</h3><IIcon tip={TT.mutual}/>
@@ -466,7 +500,7 @@ function Matches({students,sendInterest,setModal}) {
       </div>
       <div className="card" style={{padding:20}}>
         <h3 style={{fontWeight:800,color:C.navy,marginBottom:14,display:"flex",alignItems:"center",gap:6,fontSize:15}}>How Match Scores Are Computed<IIcon tip={TT.match}/></h3>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:12}}>
           {[{l:"Skill Complementarity",p:40,c:C.teal,d:"Does this person fill your skill gaps?"},{l:"Schedule Overlap",p:25,c:C.amber,d:"Do your free hours actually align?"},{l:"Reputation Score",p:20,c:C.green,d:"How reliable were they in past comps?"},{l:"Role Balance",p:15,c:C.coral,d:"Does adding them complete the team?"}].map(f=>(
             <div key={f.l} style={{textAlign:"center"}}>
               <div style={{fontSize:28,fontWeight:800,color:f.c}}>{f.p}%</div>
@@ -504,7 +538,7 @@ function MyTeam({team,setModal,toast_}) {
         {["overview","tasks","feedback"].map(t=><button key={t} className={`tab${tab===t?" on":""}`} onClick={()=>setTab(t)}>{t.charAt(0).toUpperCase()+t.slice(1)}</button>)}
       </div>
       {tab==="overview"&&(
-        <div style={{display:"grid",gridTemplateColumns:"1.2fr 1fr",gap:14}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",gap:14}}>
           <div className="card" style={{padding:20}}>
             <h3 style={{fontWeight:800,color:C.navy,marginBottom:14,display:"flex",alignItems:"center",gap:6,fontSize:15}}>Team Members<IIcon tip="Roles shown are each member's primary working style. A balanced team needs Analyst + Strategist + Communicator."/></h3>
             {team.map((m,i)=>(
@@ -761,7 +795,7 @@ function ImplDoc(){
   ];
   return(
     <div className="card" style={{padding:26}}>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14}}>
         {phases.map((ph,i)=>(
           <div key={i} style={{background:C.bg,borderRadius:12,padding:18}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
